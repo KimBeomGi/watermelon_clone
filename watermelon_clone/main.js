@@ -58,7 +58,8 @@ let interval = null // 부드럽게 좌우로 움직이게 하기 위함
 let num_suika = 0
 
 function addFruit(){
-  const index = Math.floor(Math.random() * 5)
+  
+  const index = Math.floor(Math.random() * 7)
   const fruit = FRUITS_BASE[index]
   const body = Bodies.circle(310, 50, fruit.radius, {
     isSleeping: true, // isSleeping: true 로 하면 떨어지지 않는 대기 상태
@@ -183,15 +184,12 @@ Events.on(engine, "collisionStart", (event) => {
     if(collision.bodyA.index == collision.bodyB.index){
       const index = collision.bodyA.index
       if(index === FRUITS_BASE.length - 1){
-        num_suika++ 
-        if(num_suika == 2){
-          alert('Win!!!!!!')
-        }
         return
       }
       World.remove(world, [collision.bodyA, collision.bodyB])
 
       const newFruit = FRUITS_BASE[index + 1]
+      
       const newBody = Bodies.circle(
         collision.collision.supports[0].x,
         collision.collision.supports[0].y,
@@ -203,7 +201,18 @@ Events.on(engine, "collisionStart", (event) => {
           index: index + 1
         }
       )
+      if(index + 1 === FRUITS_BASE.length - 1){
+        console.log('수박')
+        num_suika += 1
+      }
+      
       World.add(world, newBody)
+      
+      if(num_suika >= 2){
+        setTimeout(() => {
+          alert('WIN!!!!!')
+        }, 100)
+      }
     }
 
     if (!disableAction && (collision.bodyA.name === "topLine" || collision.bodyB.name === "topLine")){
